@@ -66,14 +66,14 @@ class Snappy {
 	// ADMIN INTERFACE
 	// =============================================================================
 	public function add_settings_page() {
-		add_menu_page( 
-			__( 'Snappy Cache', 'snappy' ), 
-			__( 'Snappy', 'snappy' ), 
-			'manage_options', 
-			'snappy-cache', 
-			array( $this, 'render_settings_page' ), 
-			'dashicons-performance', 
-			100 
+		add_menu_page(
+			__( 'Snappy Cache', 'snappy' ),
+			__( 'Snappy', 'snappy' ),
+			'manage_options',
+			'snappy-cache',
+			array( $this, 'render_settings_page' ),
+			'dashicons-performance',
+			100
 		);
 	}
 
@@ -87,10 +87,10 @@ class Snappy {
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<?php settings_errors( 'snappy_messages' ); ?>
 			<form action="options.php" method="post">
-				<?php 
-				settings_fields( 'snappy_settings_group' ); 
-				do_settings_sections( 'snappy-cache-settings' ); 
-				submit_button( __( 'Save Settings', 'snappy' ) ); 
+				<?php
+				settings_fields( 'snappy_settings_group' );
+				do_settings_sections( 'snappy-cache-settings' );
+				submit_button( __( 'Save Settings', 'snappy' ) );
 				?>
 			</form>
 			<br>
@@ -116,20 +116,20 @@ class Snappy {
 		register_setting( 'snappy_settings_group', $this->option_name, array( $this, 'sanitize_settings' ) );
 		foreach ( $this->field_configs as $section_key => $section ) {
 			$section_id = "snappy_{$section_key}_section";
-			add_settings_section( 
-				$section_id, 
-				$section['section'], 
-				array( $this, 'render_section' ), 
-				'snappy-cache-settings' 
+			add_settings_section(
+				$section_id,
+				$section['section'],
+				array( $this, 'render_section' ),
+				'snappy-cache-settings'
 			);
 			foreach ( $section['fields'] as $field_key => $field ) {
-				add_settings_field( 
-					"snappy_{$field_key}", 
-					$field['label'], 
-					array( $this, 'render_field' ), 
-					'snappy-cache-settings', 
-					$section_id, 
-					array( 'key' => $field_key, 'config' => $field ) 
+				add_settings_field(
+					"snappy_{$field_key}",
+					$field['label'],
+					array( $this, 'render_field' ),
+					'snappy-cache-settings',
+					$section_id,
+					array( 'key' => $field_key, 'config' => $field )
 				);
 			}
 		}
@@ -156,9 +156,9 @@ class Snappy {
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Cache Actions', 'snappy' ); ?></th>
 						<td>
-							<form method="post" action="" style="display: inline;">
+							<form method="post" action="" style="display:inline">
 								<?php wp_nonce_field( 'snappy_clear_cache', 'snappy_clear_cache_nonce' ); ?>
-								<input type="submit" name="snappy_clear_cache" class="button" value="<?php esc_attr_e( 'Clear Cache', 'snappy' ); ?>" />
+								<input type="submit" name="snappy_clear_cache" class="button" value="<?php esc_attr_e( 'Clear Cache', 'snappy' ); ?>">
 							</form>
 							<p class="description"><?php esc_html_e( 'Clear existing cache files.', 'snappy' ); ?></p>
 						</td>
@@ -178,14 +178,14 @@ class Snappy {
 		$id = "snappy_{$key}";
 		switch ( $config['type'] ) {
 			case 'checkbox':
-				echo '<input type="checkbox" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="1" ' . checked( '1', $value, false ) . ' />';
+				echo '<input type="checkbox" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="1" ' . checked( '1', $value, false ) . '>';
 				echo '<label for="' . esc_attr( $id ) . '">' . esc_html( $config['description'] ) . '</label>';
 				break;
 			case 'number':
 				echo '<input type="number" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '"';
 				if ( isset( $config['min'] ) ) echo ' min="' . esc_attr( $config['min'] ) . '"';
 				if ( isset( $config['max'] ) ) echo ' max="' . esc_attr( $config['max'] ) . '"';
-				echo ' />';
+				echo '>';
 				if ( isset( $config['description'] ) ) echo '<p class="description">' . esc_html( $config['description'] ) . '</p>';
 				break;
 			case 'textarea':
@@ -228,6 +228,7 @@ class Snappy {
 				}
 			}
 		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Checking POST key only, actual values processed via sanitize_settings with nonce verification
 		if ( !isset( $_POST['snappy_clear_cache'] ) ) {
 			add_settings_error( 'snappy_messages', 'snappy_message', __( 'Settings saved successfully', 'snappy' ), 'updated' );
 		}
@@ -240,8 +241,8 @@ class Snappy {
 		}
 		$actions = array( 'clear_cache' );
 		foreach ( $actions as $action ) {
-			if ( isset( $_POST["snappy_{$action}"] ) && 
-				 isset( $_POST["snappy_{$action}_nonce"] ) && 
+			if ( isset( $_POST["snappy_{$action}"] ) &&
+				 isset( $_POST["snappy_{$action}_nonce"] ) &&
 				 wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST["snappy_{$action}_nonce"] ) ), "snappy_{$action}" ) ) {
 				$this->{"handle_{$action}"}();
 			}
@@ -272,27 +273,27 @@ class Snappy {
 		if ( isset( $options['cache_disabled'] ) && $options['cache_disabled'] === '1' ) {
 			return $cache_result = false;
 		}
-		if ( is_user_logged_in() || 
-			 is_admin() || 
-			 is_404() || 
-			 is_search() || 
-			 is_preview() || 
-			 defined( 'DOING_AJAX' ) || 
-			 defined( 'DOING_CRON' ) || 
-			 defined( 'WP_CLI' ) || 
+		if ( is_user_logged_in() ||
+			 is_admin() ||
+			 is_404() ||
+			 is_search() ||
+			 is_preview() ||
+			 defined( 'DOING_AJAX' ) ||
+			 defined( 'DOING_CRON' ) ||
+			 defined( 'WP_CLI' ) ||
 			 defined( 'REST_REQUEST' ) ) {
 			return $cache_result = false;
 		}
 		global $pagenow;
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? 
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ?
 			sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		if ( ( isset( $pagenow ) && $pagenow === 'wp-login.php' ) ||
-			 ( isset( $_GET['action'] ) && in_array( sanitize_text_field( wp_unslash( $_GET['action'] ) ), array( 'login', 'logout', 'register', 'lostpassword', 'resetpass', 'rp', 'postpass' ), true ) ) ||
+			 ( isset( $_GET['action'] ) && in_array( sanitize_text_field( wp_unslash( $_GET['action'] ) ), array( 'login', 'logout', 'register', 'lostpassword', 'resetpass', 'rp', 'postpass' ), true ) ) || // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking GET parameter to exclude login pages from cache, not processing form data
 			 ( strpos( $request_uri, 'wp-login' ) !== false ) ||
 			 ( strpos( $request_uri, 'login' ) !== false && strpos( $request_uri, 'wp-content' ) === false ) ) {
 			return $cache_result = false;
 		}
-		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? 
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ?
 			sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : 'GET';
 		if ( $request_method !== 'GET' ) {
 			return $cache_result = false;
@@ -300,7 +301,7 @@ class Snappy {
 		if ( strpos( $request_uri, '/wp-json' ) !== false ) {
 			return $cache_result = false;
 		}
-		if ( strpos( $request_uri, '?nocache' ) !== false || 
+		if ( strpos( $request_uri, '?nocache' ) !== false ||
 			 strpos( $request_uri, '&nocache' ) !== false ) {
 			return $cache_result = false;
 		}
@@ -315,8 +316,8 @@ class Snappy {
 		if ( ( is_single() || is_page() ) ) {
 			$current_post_id = get_the_ID();
 			if ( $current_post_id ) {
-				$cache_exclude = isset( $options['cache_exclude'] ) ? 
-					array_map( 'absint', array_filter( explode( "\n", $options['cache_exclude'] ) ) ) : 
+				$cache_exclude = isset( $options['cache_exclude'] ) ?
+					array_map( 'absint', array_filter( explode( "\n", $options['cache_exclude'] ) ) ) :
 					array();
 				if ( in_array( $current_post_id, $cache_exclude, true ) ) {
 					return $cache_result = false;
@@ -341,8 +342,8 @@ class Snappy {
 			}
 		} else {
 			$cache_duration = $cache_duration_hours * HOUR_IN_SECONDS;
-			if ( file_exists( $cache_file ) && 
-				 !file_exists( $lock_file ) && 
+			if ( file_exists( $cache_file ) &&
+				 !file_exists( $lock_file ) &&
 				 ( time() - filemtime( $cache_file ) ) < $cache_duration ) {
 				$this->increment_cache_hits();
 				include $cache_file;
@@ -390,13 +391,13 @@ class Snappy {
 		$options = get_option( $this->option_name );
 		$cache_mobile = isset( $options['cache_mobile'] ) && $options['cache_mobile'] === '1';
 		if ( $cache_mobile ) {
-			$files_to_remove = array( 
-				$this->cache_dir . md5( $path . '|' . $query . '|mobile|guest' ) . '.html', 
-				$this->cache_dir . md5( $path . '|' . $query . '|desktop|guest' ) . '.html' 
+			$files_to_remove = array(
+				$this->cache_dir . md5( $path . '|' . $query . '|mobile|guest' ) . '.html',
+				$this->cache_dir . md5( $path . '|' . $query . '|desktop|guest' ) . '.html'
 			);
 		} else {
-			$files_to_remove = array( 
-				$this->cache_dir . md5( $path . '|' . $query . '|guest' ) . '.html' 
+			$files_to_remove = array(
+				$this->cache_dir . md5( $path . '|' . $query . '|guest' ) . '.html'
 			);
 		}
 		foreach ( $files_to_remove as $file ) {
@@ -409,8 +410,8 @@ class Snappy {
 	private function clear_home_cache() {
 		$options = get_option( $this->option_name );
 		$cache_mobile = isset( $options['cache_mobile'] ) && $options['cache_mobile'] === '1';
-		$home_keys = $cache_mobile ? 
-			array( md5( '/||mobile|guest' ), md5( '/||desktop|guest' ) ) : 
+		$home_keys = $cache_mobile ?
+			array( md5( '/||mobile|guest' ), md5( '/||desktop|guest' ) ) :
 			array( md5( '/||guest' ) );
 		foreach ( $home_keys as $key ) {
 			$cache_file = $this->cache_dir . $key . '.html';
@@ -442,6 +443,7 @@ class Snappy {
 			return;
 		}
 		$cleared_files = $this->clear_all_cache();
+		/* translators: %d: number of cache files cleared */
 		add_settings_error( 'snappy_messages', 'snappy_message', sprintf( __( 'Cache cleared successfully (%d files cleared)', 'snappy' ), $cleared_files ), 'updated' );
 	}
 
@@ -512,7 +514,7 @@ class Snappy {
 	private function check_rate_limit( $action, $timeout ) {
 		$current_time = time();
 		$rate_limit_key = $action . '_' . get_current_user_id();
-		if ( isset( self::$rate_limits[$rate_limit_key] ) && 
+		if ( isset( self::$rate_limits[$rate_limit_key] ) &&
 			 ( $current_time - self::$rate_limits[$rate_limit_key] ) < $timeout ) {
 			return false;
 		}
@@ -529,7 +531,7 @@ class Snappy {
 		if ( !file_exists( $cache_dir ) ) {
 			wp_mkdir_p( $cache_dir );
 		}
-		$default_options = array( 
+		$default_options = array(
 			'cache_duration' => 1,
 			'cache_exclude' => '',
 			'cache_mobile' => '1',
