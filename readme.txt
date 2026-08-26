@@ -4,9 +4,9 @@ Contributors: webguyio
 Donate link: https://webguy.io/donate
 Tags: cache, caching, page cache, speed optimization
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1
+Stable tag: 0.2
 License: GPL
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -58,6 +58,9 @@ Snappy is fully capable with its core caching capability, but if you want or nee
 - Self-hosted update system
 
 == Changelog ==
+
+= 0.2 =
+* Improved cache headers
 
 = 0.1 =
 * New

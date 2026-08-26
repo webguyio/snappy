@@ -3,7 +3,7 @@
 Plugin Name: Snappy
 Plugin URI: https://snappywp.me/
 Description: Caching for a snappier website.
-Version: 0.1
+Version: 0.2
 Requires at least: 5.0
 Requires PHP: 7.4
 Author: Web Guy
@@ -19,7 +19,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 class Snappy {
-	private $version = '0.1';
+	private $version = '0.2';
 	private $option_name = 'snappy_settings';
 	private $cache_dir;
 	private $field_configs = array();
@@ -337,15 +337,15 @@ class Snappy {
 		if ( 0 === $cache_duration_hours ) {
 			if ( file_exists( $cache_file ) && !file_exists( $lock_file ) ) {
 				$this->increment_cache_hits();
+				header( 'X-Cache: HIT' );
 				include $cache_file;
 				exit;
 			}
 		} else {
 			$cache_duration = $cache_duration_hours * HOUR_IN_SECONDS;
-			if ( file_exists( $cache_file ) &&
-				 !file_exists( $lock_file ) &&
-				 ( time() - filemtime( $cache_file ) ) < $cache_duration ) {
+			if ( file_exists( $cache_file ) && !file_exists( $lock_file ) && ( time() - filemtime( $cache_file ) ) < $cache_duration ) {
 				$this->increment_cache_hits();
+				header( 'X-Cache: HIT' );
 				include $cache_file;
 				exit;
 			}
